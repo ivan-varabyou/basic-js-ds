@@ -7,7 +7,6 @@ const { Node } = require('../extensions/list-tree.js');
 * using Node from extensions
 */
 
-
 class BinarySearchTree {
   constructor() {
     this.base = null;
@@ -46,6 +45,7 @@ class BinarySearchTree {
         return false
       }
       if(node.data === data) {
+
         return true;
       }
       if(node.data > data) {
@@ -74,43 +74,48 @@ class BinarySearchTree {
   }
 
   remove(data) {
-    removeNode(this.base, data)
+
+    this.base = removeNode(this.base, data)
     function removeNode(node, data) {
-      let currentNode = node;
-      let prevNode = null
-      while(currentNode) {
-        if(currentNode.data == data) {
-          let nextNodeLeft = currentNode.left;
-          let nextNodeRight = currentNode.right;
-
-          if(!nextNodeLeft && !nextNodeRight) {
-            if(prevNode.data > currentNode.data) {
-              prevNode.left = null;
-            } else {
-              prevNode.right = null;
-            }
-            break
-          }
-          if(nextNodeLeft) {
-            nextNodeLeft.right = nextNodeRight
-            prevNode.left = nextNodeLeft;
-            break
-          } else {
-            prevNode.right = nextNodeLeft;
-            break
-          }
-
-
-
-
-        }
-        prevNode = currentNode;
-        if(node.data > data) {
-          currentNode = node.left;
-        } else {
-          currentNode = node.right;
-        }
+      if(!node) {
+        return null;
       }
+      if(node.data > data) {
+        node.left = removeNode(node.left, data)
+        return node
+      } else if (node.data < data) {
+        node.right = removeNode(node.right, data)
+        return node
+      } else if(node.data == data) {
+        if(!node.left && !node.right) {
+          return null
+        }
+
+        if(!node.left) {
+          node = node.right;
+          return node;
+        }
+
+        if(!node.right) {
+          node = node.left
+          return node
+        }
+
+
+
+        let minNode = node.right;
+        while(minNode.left) {
+          minNode = minNode.left
+        }
+
+        node.data = minNode.data;
+
+        node.right = removeNode(node.right, minNode.data)
+
+        return node
+
+      }
+
     }
   }
 
